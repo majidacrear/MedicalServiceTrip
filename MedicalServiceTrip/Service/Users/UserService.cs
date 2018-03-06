@@ -72,6 +72,12 @@ namespace Service.Users
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
+            // Check Email exist.
+            if(_userRepository.Table.Where(u=>u.Email.ToLower().Equals(user.Email) && u.IsDeleted ==false).FirstOrDefault() != null)
+            {
+                return -1;
+            }
+
             // Check Organization Exist
             if(user.OrganizationId <=0 && !String.IsNullOrEmpty(user.Organization.OrganizationName))
             {
@@ -82,16 +88,21 @@ namespace Service.Users
                     _organizationRepository.Insert(user.Organization);
                 }
                 user.OrganizationId = user.Organization.Id;
+                user.IsOrganizationAdmin = true;
+                user.IsActive = true;
             }
-            user.MyCode = GetRefferalCode();
-            user.IsActive = false;
+            else if(user.OrganizationId >0)
+            {
+                user.IsActive = false;
+            }
+            user.MyCode = GetRefferalCode();            
             user.IsDeleted = false;
             user.CreatedDate = DateTime.Now;
             this._userRepository.Insert(user);
 
             if (!String.IsNullOrEmpty(user.RefferalCode))
             {
-                var refferalUser = this._userRepository.Table.Where(u => u.RefferalCode.Equals(user.RefferalCode)).FirstOrDefault();
+                var refferalUser = this._userRepository.Table.Where(u => u.MyCode.Equals(user.RefferalCode)).FirstOrDefault();
                 if (refferalUser != null)
                 {
                     var userRewardPoint = this._userRewardPointRepository.Table.Where(r => r.UserId == refferalUser.Id).FirstOrDefault();
@@ -100,6 +111,14 @@ namespace Service.Users
                         // Update reward points of user who shared referral code
                         userRewardPoint.RewardPoints += 100;
                         this._userRewardPointRepository.Update(userRewardPoint);
+                    }
+                    else
+                    {
+                        // Add Reward point for existing user who shared refferral code.
+                        userRewardPoint = new UserRewardPoint();
+                        userRewardPoint.UserId = refferalUser.Id;
+                        userRewardPoint.RewardPoints = 100;
+                        this._userRewardPointRepository.Insert(userRewardPoint);
                     }
 
                     // Add Reward point for new user who used refferral code.

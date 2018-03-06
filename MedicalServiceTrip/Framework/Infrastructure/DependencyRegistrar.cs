@@ -6,6 +6,7 @@ using Core.Infrastructure;
 using Core.Infrastructure.DependencyManagement;
 using Data;
 using Framework.MVC.Routing;
+using Service.Email;
 using Service.Gender;
 using Service.Installation;
 using Service.Organization;
@@ -63,6 +64,7 @@ namespace Framework.Infrastructure
             builder.RegisterType<GenderService>().As<IGenderService>().InstancePerLifetimeScope();
             builder.RegisterType<OrganizationService>().As<IOrganizationService>().InstancePerLifetimeScope();
             builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             
             //installation service
             

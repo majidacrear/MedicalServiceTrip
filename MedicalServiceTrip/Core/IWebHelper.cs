@@ -72,5 +72,9 @@ namespace Core
         string RandomString(int size);
 
         int RandomStringSize { get; }
+
+        string GetFromEmail();
+
+        string GetSendGridApiKey();
     }
 }

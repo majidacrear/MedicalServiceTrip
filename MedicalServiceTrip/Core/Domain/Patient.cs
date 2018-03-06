@@ -30,10 +30,12 @@ namespace Core.Domain
         public  int DoctorId { get; set; }
 
 
-        public Users Doctor { get; set; }
+        public virtual Users Doctor { get; set; }
 
-        public Gender Gender { get; set; }
+        public virtual Gender Gender { get; set; }
 
-        public Organization Organization { get; set; }
+        public virtual Organization Organization { get; set; }
+
+        public virtual ICollection<PatientVisit> PatientVisit { get; set; }
     }
 }

@@ -327,11 +327,20 @@ namespace Core
             return new string(buffer);
         }
 
+        public string GetFromEmail()
+        {
+            return _mSTConfig.FromEmail;
+        }
+
+        public string GetSendGridApiKey()
+        {
+            return _mSTConfig.SendGridApiKey;
+        }
         #endregion
 
         #endregion
 
-        
+
 
     }
 }

@@ -14,7 +14,8 @@ namespace Data.Mapping
             this.ToTable("Diagnosis");
             this.HasKey(e => e.Id);
             this.Property(e => e.Name).IsRequired();
-            this.Property(e => e.CreatedDate).IsRequired();            
+            this.Property(e => e.CreatedDate).IsRequired();
+            this.HasRequired(e => e.Organization).WithMany().HasForeignKey(e => e.OrganizationId).WillCascadeOnDelete(false);
         }
     }
 }

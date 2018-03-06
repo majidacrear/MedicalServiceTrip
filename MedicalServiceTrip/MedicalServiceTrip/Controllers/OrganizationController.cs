@@ -13,7 +13,7 @@ namespace MedicalServiceTrip.Controllers
 {
     [Produces("application/json")]
     [Route("api/Organization/[action]")]
-    public class OrganizationController : Controller
+    public class OrganizationController : BaseController
     {
         #region Fields
 

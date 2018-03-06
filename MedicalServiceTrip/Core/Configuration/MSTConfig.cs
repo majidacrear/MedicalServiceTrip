@@ -97,5 +97,15 @@ namespace Core.Configuration
         /// Get a value indicating size of password slat
         /// </summary>
         public int RandomStringSize { get; set; }
+
+        /// <summary>
+        /// Email used to send mails
+        /// </summary>
+        public string FromEmail { get; set; }
+
+        /// <summary>
+        /// Get or Set Api Key of SendGrid application of azure
+        /// </summary>
+        public string SendGridApiKey { get; set; }
     }
 }

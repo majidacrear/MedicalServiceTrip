@@ -11,7 +11,7 @@ namespace MedicalServiceTrip.Controllers
 {
     [Produces("application/json")]
     [Route("api/Patient/[action]")]
-    public class PatientController : Controller
+    public class PatientController : BaseController
     {
         #region Fields
         private readonly IPatientService _patientService;

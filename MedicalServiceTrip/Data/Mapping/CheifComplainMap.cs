@@ -15,6 +15,7 @@ namespace Data.Mapping
             this.HasKey(e => e.Id);
             this.Property(e => e.CreatedDate).IsRequired();
             this.HasRequired(e => e.ParentCheifComplain).WithMany().HasForeignKey(e => e.ParentCheifComplainId).WillCascadeOnDelete(false);
+            this.HasRequired(e => e.Organization).WithMany().HasForeignKey(e => e.OrganizationId).WillCascadeOnDelete(false);
         }
     }
 }

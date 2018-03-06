@@ -11,5 +11,7 @@ namespace Core.Domain
         public int UserId { get; set; }
 
         public int RewardPoints { get; set; }
+
+        public virtual Users Users { get; set; }
     }
 }

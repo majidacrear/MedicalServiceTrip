@@ -12,6 +12,14 @@ namespace Core.Domain
 
         public int PatientId { get; set; }
 
-        public Patient Patient { get; set; }
+        public bool VisitCompleted { get; set; }
+
+        public virtual Patient Patient { get; set; }
+
+        public virtual VitalSigns VitalSigns { get; set; }
+
+        public virtual IEnumerable<PatientVisitDiagnosis> PatientVisitDiagnosis { get; set; }
+
+        public virtual IEnumerable<PatientVisitCheifComplain> PatientVisitCheifComplain { get; set; }
     }
 }
