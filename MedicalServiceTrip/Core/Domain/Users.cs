@@ -29,7 +29,7 @@ namespace Core.Domain
 
         public bool IsOrganizationAdmin { get; set; }
 
-        public int OrganizationId { get; set; }
+        public int? OrganizationId { get; set; }
 
         public string DeviceNumber { get; set; }
 

@@ -24,7 +24,7 @@ namespace Data.Mapping
             this.Property(e => e.IsOrganizationAdmin).IsRequired();
             this.Property(e => e.IsActive).IsRequired();
             this.Property(e => e.CreatedDate).IsRequired();
-            this.HasRequired(e => e.Organization).WithMany().HasForeignKey(e => e.OrganizationId).WillCascadeOnDelete(false);
+            this.HasOptional(e => e.Organization).WithMany().HasForeignKey(e => e.OrganizationId).WillCascadeOnDelete(false);
             this.HasRequired(e => e.Country).WithMany().HasForeignKey(e => e.CountryId).WillCascadeOnDelete(false);
         }
     }
