@@ -79,15 +79,20 @@ namespace Service.Users
             }
 
             // Check Organization Exist
-            if(user.OrganizationId <=0 && !String.IsNullOrEmpty(user.Organization.OrganizationName))
+            if((user.OrganizationId <=0 || user.OrganizationId == null) && !String.IsNullOrEmpty(user.Organization.OrganizationName))
             {
                 var organization = _organizationRepository.Table.Where(o => o.OrganizationName.Equals(user.Organization.OrganizationName)).FirstOrDefault();
                 if (organization == null)
                 {
                     user.Organization.CreatedDate = DateTime.Now;
                     _organizationRepository.Insert(user.Organization);
+                    user.OrganizationId = user.Organization.Id;
                 }
-                user.OrganizationId = user.Organization.Id;
+                else
+                {
+                    user.Organization = organization;
+                    user.OrganizationId = organization.Id;
+                }
                 user.IsOrganizationAdmin = true;
                 user.IsActive = true;
             }
