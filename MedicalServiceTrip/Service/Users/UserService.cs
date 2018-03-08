@@ -79,7 +79,7 @@ namespace Service.Users
             }
 
             // Check Organization Exist
-            if((user.OrganizationId <=0 || user.OrganizationId == null) && !String.IsNullOrEmpty(user.Organization.OrganizationName))
+            if((user.OrganizationId <=0 || user.OrganizationId == null) && user.Organization != null && !String.IsNullOrEmpty(user.Organization.OrganizationName))
             {
                 var organization = _organizationRepository.Table.Where(o => o.OrganizationName.Equals(user.Organization.OrganizationName)).FirstOrDefault();
                 if (organization == null)
