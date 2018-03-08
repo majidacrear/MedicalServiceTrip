@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Core;
+using MedicalServiceTrip.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Service.Email;
 using Service.Users;
@@ -37,57 +42,113 @@ namespace MedicalServiceTrip.Controllers
 
         [HttpPost]
         [ActionName("RegisterUser")]
-        public int RegisterUser([FromBody]JObject jObject)
+        public ServiceResponse<Core.Domain.Users> RegisterUser([FromBody]JObject jObject)
         {
-            var user = jObject.ToObject<Core.Domain.Users>();
-            String salt = _webHelper.RandomString(_webHelper.RandomStringSize) + "=";
-            String password = _webHelper.ComputeHash(user.Password, salt, HashName.MD5);
-            user.Password = password;
-            user.PasswordSalt = salt;
-            var userId = _userService.RegisterUser(user);
-            if(userId > 0)
+            var response = new ServiceResponse<Core.Domain.Users>();
+            try
             {
-                _emailService.SendEmail("New Registration", "Dear "+user.FullName+"<br/> Thank you for registering with us. Here is your code <b>"+user.MyCode+"</b>", user.Email, null, null);
+                var user = jObject.ToObject<Core.Domain.Users>();
+                String salt = _webHelper.RandomString(_webHelper.RandomStringSize) + "=";
+                String password = _webHelper.ComputeHash(user.Password, salt, HashName.MD5);
+                user.Password = password;
+                user.PasswordSalt = salt;
+                var userId = _userService.RegisterUser(user);
+                if (userId > 0)
+                {
+                    _emailService.SendEmail("New Registration", "Dear " + user.FullName + "<br/> Thank you for registering with us. Here is your code <b>" + user.MyCode + "</b>", user.Email, null, null);
+                }
+                response.Model = user;
+                response.Success = true;
             }
-            return userId;
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         [HttpPost]
         [ActionName("ActivateUser")]
-        public bool ActivateUser([FromBody]JObject jObject)
+        public ServiceResponse<bool> ActivateUser([FromBody]JObject jObject)
         {
             var id = (int)jObject["id"];
-           
-            return _userService.ActivateUser(id);
+            var response = new ServiceResponse<bool>();
+            try
+            {
+                response.Model = _userService.ActivateUser(id);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         [HttpPost]
         [ActionName("DeactivateUser")]
-        public bool DeactivateUser([FromBody]JObject jObject)
+        public ServiceResponse<bool> DeactivateUser([FromBody]JObject jObject)
         {
             var id = (int)jObject["id"];
-
-            return _userService.DeactivateUser(id);
+            var response = new ServiceResponse<bool>();
+            try
+            {
+                response.Model = _userService.DeactivateUser(id);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         [HttpGet]
         [ActionName("GetUsersByOrganizationId")]
-        public IEnumerable<Core.Domain.Users> GetUsersByOrganizationId([FromBody]JObject jObject)
+        public ServiceResponse<IEnumerable<Core.Domain.Users>> GetUsersByOrganizationId([FromBody]JObject jObject)
         {
             var organizationId = (int)jObject["organizationId"];
-
-            return _userService.GetUsersByOrganizationId(organizationId);
+            var response = new ServiceResponse<IEnumerable<Core.Domain.Users>>();
+            try
+            {
+                response.Model = _userService.GetUsersByOrganizationId(organizationId);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         [HttpPost]
         [ActionName("VerifyUser")]
-        public Core.Domain.Users VerifyUser([FromBody]JObject jObject)
+        public ServiceResponse<Core.Domain.Users> VerifyUser([FromBody]JObject jObject)
         {
             var username = (string)jObject["username"];
             var password = (string)jObject["password"];
-
-            return _userService.VerifyUser(username,password);
+            var deviceNumber = (string)jObject["deviceNumber"];
+            var response = new ServiceResponse<Core.Domain.Users>();
+            try
+            {
+                response.Model = _userService.VerifyUser(username, password, deviceNumber);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
+        #endregion
+
+        #region Private Methods
+
         #endregion
     }
 }

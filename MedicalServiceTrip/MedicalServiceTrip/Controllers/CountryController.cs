@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MedicalServiceTrip.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Country;
@@ -30,9 +31,20 @@ namespace MedicalServiceTrip.Controllers
 
         [HttpGet]
         [ActionName("GetCountryList")]
-        public IEnumerable<Core.Domain.Country> GetCountryList()
+        public ServiceResponse<IEnumerable<Core.Domain.Country>>  GetCountryList()
         {
-            return _countryService.GetCountryList();
+            var response = new ServiceResponse<IEnumerable<Core.Domain.Country>>();
+            try
+            {
+                response.Model = _countryService.GetCountryList();
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         #endregion

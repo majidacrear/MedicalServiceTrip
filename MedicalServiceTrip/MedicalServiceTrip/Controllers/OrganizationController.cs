@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using MedicalServiceTrip.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -33,30 +34,84 @@ namespace MedicalServiceTrip.Controllers
 
         [HttpPost]
         [ActionName("CheckOrganizationExist")]
-        public bool CheckOrganizationExist([FromBody]JObject name)
+        public ServiceResponse<bool> CheckOrganizationExist([FromBody]JObject name)
         {
-            return _organizationService.CheckOrganizationExist((string)name["name"]);
+            var response = new ServiceResponse<bool>();
+            try
+            {
+                response.Model = _organizationService.CheckOrganizationExist((string)name["name"]);
+                response.Success = true;
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+
+            }
+            return response;
         }
 
         [HttpGet]
-        public Core.Domain.Organization Get(int id)
+        public ServiceResponse<Core.Domain.Organization> Get(int id)
         {
-            return _organizationService.GetOrganizationById(id);
+            var response = new ServiceResponse<Core.Domain.Organization>();
+            try
+            {
+                response.Model = _organizationService.GetOrganizationById(id);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+
+            }
+            return response;
         }
 
         [HttpGet]
         [ActionName("GetAllOrganization")]
-        public IEnumerable<Core.Domain.Organization> GetAllOrganization()
+        public ServiceResponse<IEnumerable<Core.Domain.Organization>> GetAllOrganization()
         {
-            return _organizationService.GetAllOrganization();
+            var response = new ServiceResponse<IEnumerable<Core.Domain.Organization>>();
+            try
+            {
+                response.Model= _organizationService.GetAllOrganization();
+                response.Success = true;
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         [HttpPost]
         [ActionName("RegisterOrganization")]
-        public IEnumerable<Core.Domain.Organization> RegisterOrganization([FromBody]JObject jObject)
+        public ServiceResponse<Core.Domain.Organization> RegisterOrganization([FromBody]JObject jObject)
         {
-            var organization = jObject.ToObject<Core.Domain.Organization>();
-            return _organizationService.GetAllOrganization();
+            var response = new ServiceResponse<Core.Domain.Organization>();
+            try
+            {
+                var organization = jObject.ToObject<Core.Domain.Organization>();
+                var id = _organizationService.RegisterOrganization(organization);
+                if(id>0)
+                {
+                    response.Model = organization;
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                }
+            }
+            catch(Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Success = false;
+            }
+            return response;
         }
         #endregion
     }

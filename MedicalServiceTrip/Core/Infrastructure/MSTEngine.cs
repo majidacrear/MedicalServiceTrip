@@ -152,7 +152,11 @@ namespace Core.Infrastructure
             CommonHelper.BaseDirectory = hostingEnvironment.ContentRootPath;
 
             //initialize plugins
-            var mvcCoreBuilder = services.AddMvc();
+            var mvcCoreBuilder = services.AddMvc().AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ContractResolver
+                    = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+            });
         }
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)

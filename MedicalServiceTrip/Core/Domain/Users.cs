@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,22 +10,28 @@ namespace Core.Domain
 {
     public partial class Users : BaseEntity
     {
+        [Required]
         public string FullName { get; set; }
 
+        [Required]
         public int CountryId { get; set; }
 
+        [Required]
         public string Email { get; set; }
 
+        [Required]
         public string TypeOfProfessional { get; set; }
 
+        [Required]
         public string Specialty { get; set; }
-
-        [JsonIgnore]
+        
+        [Required]
         public string Password { get; set; }
 
         [JsonIgnore]
         public string PasswordSalt { get; set; }
 
+        [Required]
         public int PinCode { get; set; }
 
         public bool IsActive { get; set; }
@@ -33,7 +40,7 @@ namespace Core.Domain
 
         public int? OrganizationId { get; set; }
 
-        
+        [Required]
         public string DeviceNumber { get; set; }
 
         
