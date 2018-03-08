@@ -55,6 +55,7 @@ namespace MedicalServiceTrip.Controllers
                 var userId = _userService.RegisterUser(user);
                 if (userId > 0)
                 {
+                    user.Id = userId;
                     _emailService.SendEmail("New Registration", "Dear " + user.FullName + "<br/> Thank you for registering with us. Here is your code <b>" + user.MyCode + "</b>", user.Email, null, null);
                 }
                 response.Model = user;
