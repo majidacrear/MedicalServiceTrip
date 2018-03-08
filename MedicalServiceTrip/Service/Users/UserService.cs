@@ -75,7 +75,7 @@ namespace Service.Users
             // Check Email exist.
             if(_userRepository.Table.Where(u=>u.Email.ToLower().Equals(user.Email) && u.IsDeleted ==false).FirstOrDefault() != null)
             {
-                return -1;
+                throw new Exception("Email already exist.");
             }
 
             // Check Organization Exist
