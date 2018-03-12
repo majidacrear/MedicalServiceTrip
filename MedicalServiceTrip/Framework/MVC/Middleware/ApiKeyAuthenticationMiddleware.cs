@@ -99,6 +99,6 @@ namespace Framework.MVC.Middleware
                                                 "/api/User/VerifyUser",
                                                 "/api/Organization/CheckOrganizationExist",
                                                  "/api/Organization/GetAllOrganization",
-                                                "api/Country/GetCountryList"};
+                                                "/api/Country/GetCountryList"};
     }
 }
