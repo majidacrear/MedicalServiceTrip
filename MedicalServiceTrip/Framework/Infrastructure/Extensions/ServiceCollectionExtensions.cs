@@ -33,7 +33,7 @@ namespace Framework.Infrastructure.Extensions
             services.ConfigureStartupConfig<HostingConfig>(configuration.GetSection("Hosting"));
             //add accessor to HttpContext
             services.AddHttpContextAccessor();
-
+            
             //create, initialize and configure the engine
             var engine = EngineContext.Create();
             engine.Initialize(services);

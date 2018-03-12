@@ -43,7 +43,7 @@ namespace MedicalServiceTrip
             {
                 app.UseExceptionHandler("/Error");
             }
-            
+            app.UseApiKeyAuthenticationMiddleware();
             app.UseMvc(routes =>
             {
 

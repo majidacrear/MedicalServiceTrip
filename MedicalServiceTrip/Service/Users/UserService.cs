@@ -145,18 +145,29 @@ namespace Service.Users
                 throw new ArgumentNullException(nameof(password));
             if (string.IsNullOrEmpty(deviceNumber))
                 throw new ArgumentNullException(nameof(deviceNumber));
-            var user = this._userRepository.Table.Where(u => u.Email.ToLower().Trim().Equals(email) && u.IsDeleted == true && u.IsActive == true).FirstOrDefault();
+            var user = this._userRepository.Table.Where(u => u.Email.ToLower().Trim().Equals(email) && u.IsDeleted == false).FirstOrDefault();
             if(user != null)
             {
-                var salt = user.PasswordSalt;
-                password = _webHelper.ComputeHash(password, salt);
-                if (!user.Password.Equals(password))
-                    throw new Exception("Invalid Username or Password");
-                else if(user.DeviceNumber.Equals(deviceNumber))
+                if (user.IsActive == true)
                 {
-                    user.DeviceNumber = deviceNumber;
-                    _userRepository.Update(user);
+                    var salt = user.PasswordSalt;
+                    password = _webHelper.ComputeHash(password, salt);
+                    if (!user.Password.Equals(password))
+                        throw new Exception("Oops! Invalid Username or Password");
+                    else if (user.DeviceNumber.Equals(deviceNumber))
+                    {
+                        user.DeviceNumber = deviceNumber;
+                        _userRepository.Update(user);
+                    }
                 }
+                else
+                {
+                    throw new Exception("Oops! Your account is not activated. Please contact organization Administrator to activate your account.");
+                }
+            }
+            else
+            {
+                throw new Exception("Oops! Invalid Username or Password.");
             }
             return user;
 

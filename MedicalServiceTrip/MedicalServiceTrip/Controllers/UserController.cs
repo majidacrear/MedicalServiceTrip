@@ -136,8 +136,14 @@ namespace MedicalServiceTrip.Controllers
             var response = new ServiceResponse<Core.Domain.Users>();
             try
             {
-                response.Model = _userService.VerifyUser(username, password, deviceNumber);
-                response.Success = true;
+                var user = _userService.VerifyUser(username, password, deviceNumber);
+                if (user != null)
+                {
+                    var key = _webHelper.Encrypt(user.Id + "@_@" + user.DeviceNumber + "@_@" + DateTime.Now.ToString());
+                    this.Response.Headers.Add("ApiKey", key);
+                    response.Model = user;
+                    response.Success = true;
+                }
             }
             catch (Exception ex)
             {

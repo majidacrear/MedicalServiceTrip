@@ -5,7 +5,13 @@ namespace Core
 {
     public partial interface IWebHelper
     {
-        
+        /// <summary> 
+        /// Encrypt text by key 
+        /// </summary> 
+        /// <param name="value">plain text</param> 
+        /// <returns>encrypted text</returns> 
+        string Encrypt(string value);
+
         /// <summary> 
         /// Encrypt text by key 
         /// </summary> 
