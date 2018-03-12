@@ -33,7 +33,7 @@ namespace Framework.MVC.Middleware
         {
 
             var request = context.Request;
-            if (!request.Path.Value.Contains("/api/User/RegisterUser") && !request.Path.Value.Contains("/api/User/VerifyUser"))
+            if (!ExcludeApiUrlForAuthentication.ExcludeList.Contains(request.Path.Value))
             {
                 if (request.Headers.Keys.Contains("ApiKey") && request.Headers.Keys.Contains("DeviceNumber"))
                 {
@@ -91,5 +91,13 @@ namespace Framework.MVC.Middleware
             
 
         }
+    }
+
+    internal class ExcludeApiUrlForAuthentication
+    {
+        public static string[] ExcludeList = { "/api/User/RegisterUser" ,
+                                                "/api/User/VerifyUser",
+                                                "/api/Organization/CheckOrganizationExist",
+                                                 "/api/Organization/GetAllOrganization"};
     }
 }
