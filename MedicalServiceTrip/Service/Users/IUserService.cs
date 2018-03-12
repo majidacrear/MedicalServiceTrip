@@ -8,6 +8,9 @@ namespace Service.Users
 {
     public interface IUserService
     {
+
+        Core.Domain.Users GetUserById(int id);
+
         int RegisterUser(Core.Domain.Users user);
 
         Core.Domain.Users VerifyUser(string email, string password,string deviceNumber);

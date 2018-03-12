@@ -32,6 +32,13 @@ namespace Service.Users
         }
         #endregion
 
+        public Core.Domain.Users GetUserById(int id)
+        {
+            if (id <= 0)
+                throw new Exception("UserId cannot be less than or equal to 0.");
+            return _userRepository.GetById(id);
+        }
+
         public bool ActivateUser(int userId)
         {
             if (userId <= 0)
@@ -43,7 +50,10 @@ namespace Service.Users
                 this._userRepository.Update(user);
                 return true;
             }
-            return false;
+            else
+            {
+                throw new Exception("Invalid User Id.");
+            }
         }
 
         public bool DeactivateUser(int userId)
@@ -57,7 +67,10 @@ namespace Service.Users
                 this._userRepository.Update(user);
                 return true;
             }
-            return false;
+            else
+            {
+                throw new Exception("Invalid User Id.");
+            }
         }
 
         public IEnumerable<Core.Domain.Users> GetUsersByOrganizationId(int organizationId)
