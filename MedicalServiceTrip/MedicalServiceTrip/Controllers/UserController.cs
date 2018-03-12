@@ -130,9 +130,9 @@ namespace MedicalServiceTrip.Controllers
         [ActionName("VerifyUser")]
         public ServiceResponse<Core.Domain.Users> VerifyUser([FromBody]JObject jObject)
         {
-            var username = (string)jObject["username"];
-            var password = (string)jObject["password"];
-            var deviceNumber = (string)jObject["deviceNumber"];
+            var username = (string)jObject["Username"];
+            var password = (string)jObject["Password"];
+            var deviceNumber = (string)jObject["DeviceNumber"];
             var response = new ServiceResponse<Core.Domain.Users>();
             try
             {
