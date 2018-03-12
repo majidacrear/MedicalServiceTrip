@@ -98,6 +98,7 @@ namespace Framework.MVC.Middleware
         public static string[] ExcludeList = { "/api/User/RegisterUser" ,
                                                 "/api/User/VerifyUser",
                                                 "/api/Organization/CheckOrganizationExist",
-                                                 "/api/Organization/GetAllOrganization"};
+                                                 "/api/Organization/GetAllOrganization",
+                                                "api/Country/GetCountryList"};
     }
 }
