@@ -50,11 +50,7 @@ namespace MedicalServiceTrip
             app.UseApiKeyAuthenticationMiddleware();
             app.UseStaticFiles();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
-                RequestPath = new PathString("/Uploads")
-            });
+            
             app.UseMvc(routes =>
             {
 
