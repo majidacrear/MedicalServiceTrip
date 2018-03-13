@@ -16,7 +16,7 @@ namespace Data.Mapping
             this.Property(e => e.FullName).IsRequired().HasMaxLength(500);
             this.Property(e => e.PhoneNumber).IsRequired().HasMaxLength(20);
             this.Property(e => e.Location).IsRequired().HasMaxLength(500);
-            this.Property(e => e.ImagePath).IsRequired().HasMaxLength(1000);
+            this.Property(e => e.ImagePath).HasMaxLength(1000);
             this.Property(e => e.CreatedDate).IsRequired();
             this.HasRequired(e => e.Organization).WithMany().HasForeignKey(e => e.OrganizationId).WillCascadeOnDelete(false);
             this.HasRequired(e => e.Gender).WithMany().HasForeignKey(e => e.GenderId).WillCascadeOnDelete(false);

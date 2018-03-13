@@ -9,6 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Framework.Infrastructure.Extensions;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+
 namespace MedicalServiceTrip
 {
     public class Startup
@@ -44,6 +48,13 @@ namespace MedicalServiceTrip
                 app.UseExceptionHandler("/Error");
             }
             app.UseApiKeyAuthenticationMiddleware();
+            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Uploads")),
+                RequestPath = new PathString("/Uploads")
+            });
             app.UseMvc(routes =>
             {
 

@@ -8,7 +8,7 @@ namespace Service.Patient
 {
     public interface IPatientService
     {
-        int AddPatient(Core.Domain.Patient patient);
+        Core.Domain.Patient AddPatient(Core.Domain.Patient patient);
 
         Core.Domain.Patient GetPatientById(int patientId);
 

@@ -26,17 +26,25 @@ namespace Service.Patient
         }
         #endregion
 
-        public int AddPatient(Core.Domain.Patient patient)
+        public Core.Domain.Patient AddPatient(Core.Domain.Patient patient)
         {
+            if (patient == null)
+                throw new ArgumentNullException(nameof(patient));
             var checkPatient = _patientRepository.Table.Where(p => p.PatientIdNumber == patient.PatientIdNumber).FirstOrDefault();
             if (checkPatient == null)
             {
                 patient.CreatedDate = DateTime.Now;
                 _patientRepository.Insert(patient);
-                return patient.Id;
+                return patient;
             }
             else
-               return checkPatient.Id;
+            {
+                //checkPatient.Age = patient.Age;
+                //checkPatient.FullName = patient.FullName;
+                //checkPatient.Location = patient.Location;
+                //checkPatient.PhoneNumber = patient.PhoneNumber;
+                return checkPatient;
+            }
         }
         
         public IEnumerable<Core.Domain.Patient> GetAllPatientByOrganizationAndUserId(int organizationnId,int userId)

@@ -56,7 +56,7 @@ namespace MedicalServiceTrip.Controllers
                 if (userId > 0)
                 {
                     user.Id = userId;
-                    _emailService.SendEmail("New Registration", "Dear " + user.FullName + "<br/> Thank you for registering with us. Here is your code <b>" + user.MyCode + "</b>", user.Email, null, null);
+                    _emailService.SendEmail("New Registration", "Welcome to Q2 " + user.FullName + ".<br/> This email is sent to confirm your registration with Q2. You can invite your friends and colleagues by sharing this code  <b>" + user.MyCode + "</b>. This code must be inserted in the designated field in the registration form. <br/>Again, thank you for joining Q2!<br/> Cheers! <br/>Q2", user.Email, null, null);
                 }
                 response.Model = user;
                 response.Success = true;
@@ -73,7 +73,7 @@ namespace MedicalServiceTrip.Controllers
         [ActionName("ActivateUser")]
         public ServiceResponse<bool> ActivateUser([FromBody]JObject jObject)
         {
-            var id = (int)jObject["id"];
+            var id = (int)jObject["Id"];
             var response = new ServiceResponse<bool>();
             try
             {
@@ -92,7 +92,7 @@ namespace MedicalServiceTrip.Controllers
         [ActionName("DeactivateUser")]
         public ServiceResponse<bool> DeactivateUser([FromBody]JObject jObject)
         {
-            var id = (int)jObject["id"];
+            var id = (int)jObject["Id"];
             var response = new ServiceResponse<bool>();
             try
             {
@@ -107,11 +107,11 @@ namespace MedicalServiceTrip.Controllers
             return response;
         }
 
-        [HttpGet]
+        [HttpPost]
         [ActionName("GetUsersByOrganizationId")]
         public ServiceResponse<IEnumerable<Core.Domain.Users>> GetUsersByOrganizationId([FromBody]JObject jObject)
         {
-            var organizationId = (int)jObject["organizationId"];
+            var organizationId = (int)jObject["OrganizationId"];
             var response = new ServiceResponse<IEnumerable<Core.Domain.Users>>();
             try
             {

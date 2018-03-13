@@ -11,6 +11,7 @@ using Service.Email;
 using Service.Gender;
 using Service.Installation;
 using Service.Organization;
+using Service.Patient;
 using Service.Users;
 using System;
 using System.Collections.Generic;
@@ -67,9 +68,10 @@ namespace Framework.Infrastructure
             builder.RegisterType<OrganizationService>().As<IOrganizationService>().InstancePerLifetimeScope();
             builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
-            
+            builder.RegisterType<PatientService>().As<IPatientService>().InstancePerLifetimeScope();
+            builder.RegisterType<PatientVisitService>().As<IPatientVisitService>().InstancePerLifetimeScope();
             //installation service
-            
+
             builder.RegisterType<CodeFirstInstallationService>().As<IInstallationService>().InstancePerLifetimeScope();
             
         }
