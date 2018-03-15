@@ -53,6 +53,7 @@ namespace MedicalServiceTrip.Controllers
                     patient.ImagePath = patient.Id + Path.GetExtension(file.FileName);
                     _storage.StoreFile(patient.ImagePath, _mSTConfig.AzureBlobProfile, file.OpenReadStream());                    
                     _patientService.UpdatePatient(patient);
+                    patient.ImagePath = _mSTConfig.AzureBlobEndPoint + _mSTConfig.AzureBlobProfile + "/" + patient.ImagePath;
                 }
                 response.Model = patient;
                 response.Success = true;
@@ -100,7 +101,15 @@ namespace MedicalServiceTrip.Controllers
             var response = new ServiceResponse<IEnumerable<Core.Domain.Patient>>();
             try
             {
-                response.Model = _patientService.GetAllPatientByOrganizationAndUserId(organizationnId, userId);
+                var list = _patientService.GetAllPatientByOrganizationAndUserId(organizationnId, userId);
+                if(list != null)
+                {
+                    foreach(var patient in list)
+                    {
+                        patient.ImagePath = _mSTConfig.AzureBlobEndPoint + _mSTConfig.AzureBlobProfile + "/" + patient.ImagePath;
+                    }
+                }
+                response.Model = list;
                 response.Success = true;
             }
             catch(Exception ex)
