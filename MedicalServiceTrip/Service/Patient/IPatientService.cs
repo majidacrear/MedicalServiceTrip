@@ -15,5 +15,7 @@ namespace Service.Patient
         IEnumerable<Core.Domain.Patient> GetAllPatientByOrganizationAndUserId(int organizationnId,int userId);
 
         bool TransferPatient(int patientId, int toDoctorId);
+
+        void UpdatePatient(Core.Domain.Patient patient);
     }
 }

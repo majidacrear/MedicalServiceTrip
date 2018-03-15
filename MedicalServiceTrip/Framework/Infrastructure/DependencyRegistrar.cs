@@ -12,6 +12,7 @@ using Service.Gender;
 using Service.Installation;
 using Service.Organization;
 using Service.Patient;
+using Service.Storage;
 using Service.Users;
 using System;
 using System.Collections.Generic;
@@ -70,6 +71,7 @@ namespace Framework.Infrastructure
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<PatientService>().As<IPatientService>().InstancePerLifetimeScope();
             builder.RegisterType<PatientVisitService>().As<IPatientVisitService>().InstancePerLifetimeScope();
+            builder.RegisterType<AzureStorage>().As<IStorage>().InstancePerLifetimeScope();
             //installation service
 
             builder.RegisterType<CodeFirstInstallationService>().As<IInstallationService>().InstancePerLifetimeScope();

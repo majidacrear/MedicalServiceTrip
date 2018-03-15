@@ -69,5 +69,10 @@ namespace Service.Patient
             }
             return false;
         }
+
+        public void UpdatePatient(Core.Domain.Patient patient)
+        {
+            _patientRepository.Update(patient);
+        }
     }
 }

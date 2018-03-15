@@ -23,19 +23,21 @@ namespace Core.Configuration
         /// Gets or sets a value indicating whether we compress response
         /// </summary>
         public bool UseResponseCompression { get; set; }
-
-        /// <summary>
-        /// Gets or sets connection string for Azure BLOB storage
-        /// </summary>
-        public string AzureBlobStorageConnectionString { get; set; }
-        /// <summary>
-        /// Gets or sets container name for Azure BLOB storage
-        /// </summary>
-        public string AzureBlobStorageContainerName { get; set; }
+        
         /// <summary>
         /// Gets or sets end point for Azure BLOB storage
         /// </summary>
-        public string AzureBlobStorageEndPoint { get; set; }
+        public virtual string AzureBlobEndPoint { get; set; }
+
+        /// <summary>
+        /// Connection string of azure blod storage
+        /// </summary>
+        public virtual string AzureConnection { get; set; }
+
+        /// <summary>
+        /// Name of Profile folder in blob
+        /// </summary>
+        public virtual string AzureBlobProfile { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether we should use Redis server for caching (instead of default in-memory caching)

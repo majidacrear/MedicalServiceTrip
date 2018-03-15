@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MedicalServiceTrip.Model;
@@ -7,6 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Service.Patient;
+using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Service.Storage;
+using Core.Configuration;
 
 namespace MedicalServiceTrip.Controllers
 {
@@ -15,13 +21,19 @@ namespace MedicalServiceTrip.Controllers
     {
         #region Fields
         private readonly IPatientService _patientService;
+
+        private readonly IStorage _storage;
+
+        private readonly MSTConfig _mSTConfig;
         #endregion
 
         #region Cors
 
-        public PatientController(IPatientService patientService)
+        public PatientController(IPatientService patientService,IStorage storage,MSTConfig mSTConfig)
         {
             this._patientService = patientService;
+            _storage = storage;
+            _mSTConfig = mSTConfig;
         }
 
         #endregion
@@ -30,13 +42,19 @@ namespace MedicalServiceTrip.Controllers
 
         [HttpPost]
         [ActionName("AddPatient")]
-        public ServiceResponse<Core.Domain.Patient> AddPatient([FromBody]JObject jObject, IFormFile file)
+        public ServiceResponse<Core.Domain.Patient> AddPatient(Core.Domain.Patient patient, IFormFile file)
         {
             var response = new ServiceResponse<Core.Domain.Patient>();
             try
-            {
-                var patient = jObject.ToObject<Core.Domain.Patient>();
-                response.Model = _patientService.AddPatient(patient);
+            {                
+                patient = _patientService.AddPatient(patient);
+                if(patient.Id > 0 && file != null && file.Length > 0)
+                {
+                    patient.ImagePath = patient.Id + Path.GetExtension(file.FileName);
+                    _storage.StoreFile(patient.ImagePath, _mSTConfig.AzureBlobProfile, file.OpenReadStream());                    
+                    _patientService.UpdatePatient(patient);
+                }
+                response.Model = patient;
                 response.Success = true;
             }
             catch(Exception ex)
@@ -49,10 +67,29 @@ namespace MedicalServiceTrip.Controllers
             return response;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file)
+        [HttpPost("UploadFiles")]
+        public async Task<IActionResult> Post(List<IFormFile> files)
         {
-            return null;
+            long size = files.Sum(f => f.Length);
+
+            // full path to file in temp location
+            var filePath = Path.GetTempFileName();
+
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+                }
+            }
+
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
+            return Ok(new { count = files.Count, size, filePath });
         }
 
         [HttpPost]
@@ -83,7 +120,11 @@ namespace MedicalServiceTrip.Controllers
             var response = new ServiceResponse<Core.Domain.Patient>();
             try
             {
-                response.Model = _patientService.GetPatientById(patientId);
+
+                //https://mstblob.blob.core.windows.net/profile
+                var patient = _patientService.GetPatientById(patientId);
+                patient.ImagePath = _mSTConfig.AzureBlobEndPoint + _mSTConfig.AzureBlobProfile + "/" + patient.ImagePath;
+                response.Model = patient;
                 response.Success = true;
             }
             catch (Exception ex)
