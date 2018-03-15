@@ -52,9 +52,10 @@ namespace MedicalServiceTrip.Controllers
                 {
                     patient.ImagePath = patient.Id + Path.GetExtension(file.FileName);
                     _storage.StoreFile(patient.ImagePath, _mSTConfig.AzureBlobProfile, file.OpenReadStream());                    
-                    _patientService.UpdatePatient(patient);
-                    patient.ImagePath = _mSTConfig.AzureBlobEndPoint + _mSTConfig.AzureBlobProfile + "/" + patient.ImagePath;
+                    _patientService.UpdatePatient(patient);                    
                 }
+                if(!string.IsNullOrEmpty(patient.ImagePath))
+                    patient.ImagePath = _mSTConfig.AzureBlobEndPoint + _mSTConfig.AzureBlobProfile + "/" + patient.ImagePath;
                 response.Model = patient;
                 response.Success = true;
             }
