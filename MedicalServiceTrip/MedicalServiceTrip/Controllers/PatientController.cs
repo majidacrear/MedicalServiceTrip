@@ -60,7 +60,7 @@ namespace MedicalServiceTrip.Controllers
             catch(Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = (ex.InnerException != null) ? ex.InnerException.Message + " " + ex.StackTrace : ex.Message;
             }
            
             
