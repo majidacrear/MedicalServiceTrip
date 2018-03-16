@@ -21,6 +21,7 @@ namespace Data.Mapping
             this.HasRequired(e => e.Organization).WithMany().HasForeignKey(e => e.OrganizationId).WillCascadeOnDelete(false);
             this.HasRequired(e => e.Gender).WithMany().HasForeignKey(e => e.GenderId).WillCascadeOnDelete(false);
             this.HasRequired(e => e.Doctor).WithMany().HasForeignKey(e => e.DoctorId).WillCascadeOnDelete(false);
+            this.Ignore(e => e.PatientVisitStatus);
         }
     }
 }

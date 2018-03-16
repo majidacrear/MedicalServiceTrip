@@ -59,5 +59,7 @@ namespace Core.Domain
 
         [JsonIgnore]
         public Country Country { get; set; }
+
+        public string ApiKey { get; set; }
     }
 }

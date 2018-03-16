@@ -186,6 +186,27 @@ namespace Service.Users
 
         }
 
+        public bool ChangeUserPin(int userId, int pinCode)
+        {
+            if (userId <= 0)
+                throw new ArgumentNullException(nameof(userId));
+
+            if (pinCode <= 0)
+                throw new ArgumentNullException(nameof(pinCode));
+
+            var user = _userRepository.GetById(userId);
+            if(user != null)
+            {
+                user.PinCode = pinCode;
+                _userRepository.Update(user);
+                return true;
+            }
+            else
+            {
+                throw new Exception("Invlaid User Id");
+            }
+        }
+
         private string GetRefferalCode()
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -196,5 +217,7 @@ namespace Service.Users
                           .ToArray());
             return result;
         }
+
+
     }
 }

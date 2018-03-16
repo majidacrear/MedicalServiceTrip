@@ -11,6 +11,22 @@ namespace MedicalServiceTrip.Controllers
     [Route("api/[controller]")]
     public class BaseController : Controller
     {
-        
+
+        #region Methods
+        protected string GetErrorMessageDetail(Exception ex)
+        {
+            return GetExceptionMessage(ex);
+        }
+
+        private String GetExceptionMessage(Exception ex)
+        {
+            String message=string.Empty;
+            if (ex.InnerException != null)
+                message += GetExceptionMessage(ex.InnerException);
+            else
+                message = ex.Message;
+            return message;
+        }
+        #endregion
     }
 }

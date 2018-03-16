@@ -64,7 +64,7 @@ namespace MedicalServiceTrip.Controllers
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
             return response;
         }
@@ -83,7 +83,7 @@ namespace MedicalServiceTrip.Controllers
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
             return response;
         }
@@ -102,7 +102,7 @@ namespace MedicalServiceTrip.Controllers
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
             return response;
         }
@@ -121,7 +121,7 @@ namespace MedicalServiceTrip.Controllers
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
             return response;
         }
@@ -141,6 +141,7 @@ namespace MedicalServiceTrip.Controllers
                 {
                     var key = _webHelper.Encrypt(user.Id + "@_@" + user.DeviceNumber + "@_@" + DateTime.Now.ToString());
                     this.Response.Headers.Add("ApiKey", key);
+                    user.ApiKey = key;
                     response.Model = user;
                     response.Success = true;
                 }
@@ -148,7 +149,28 @@ namespace MedicalServiceTrip.Controllers
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
+            }
+            return response;
+        }
+
+        [HttpPost]
+        [ActionName("ChangeUserPinCode")]
+        public ServiceResponse<bool> ChangeUserPinCode([FromBody]JObject jObject)
+        {
+            var userId = (int)jObject["UserId"];
+            var pinCode = (int)jObject["PinCode"];
+            var response = new ServiceResponse<bool>();
+            try
+            {
+                _userService.ChangeUserPin(userId, pinCode);
+                response.Model = true;
+                response.Success = true;
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.Message = GetErrorMessageDetail(ex);
             }
             return response;
         }

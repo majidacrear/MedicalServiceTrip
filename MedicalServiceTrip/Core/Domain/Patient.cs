@@ -37,5 +37,7 @@ namespace Core.Domain
         public virtual Organization Organization { get; set; }
 
         public virtual ICollection<PatientVisit> PatientVisit { get; set; }
+
+        public virtual string PatientVisitStatus { get; set; }
     }
 }

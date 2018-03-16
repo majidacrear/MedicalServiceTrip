@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Service.Patient;
-using Microsoft.Azure;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Service.Storage;
 using Core.Configuration;
 
@@ -62,38 +59,14 @@ namespace MedicalServiceTrip.Controllers
             catch(Exception ex)
             {
                 response.Success = false;
-                response.Message = (ex.InnerException != null) ? ex.InnerException.Message + " " + ex.StackTrace : ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
            
             
             return response;
         }
 
-        [HttpPost("UploadFiles")]
-        public async Task<IActionResult> Post(List<IFormFile> files)
-        {
-            long size = files.Sum(f => f.Length);
-
-            // full path to file in temp location
-            var filePath = Path.GetTempFileName();
-
-            foreach (var formFile in files)
-            {
-                if (formFile.Length > 0)
-                {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await formFile.CopyToAsync(stream);
-                    }
-                }
-            }
-
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
-
-            return Ok(new { count = files.Count, size, filePath });
-        }
-
+        
         [HttpPost]
         [ActionName("GetAllMyPatients")]
         public ServiceResponse<IEnumerable<Core.Domain.Patient>> GetAllPatientByOrganizationAndUserId([FromBody]JObject jObject )
@@ -116,7 +89,7 @@ namespace MedicalServiceTrip.Controllers
             catch(Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
             return response;
         }
@@ -140,7 +113,7 @@ namespace MedicalServiceTrip.Controllers
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
 
 
@@ -161,7 +134,7 @@ namespace MedicalServiceTrip.Controllers
             catch(Exception ex)
             {
                 response.Success = false;
-                response.Message = ex.Message;
+                response.Message = GetErrorMessageDetail(ex);
             }
             return response;
         }
