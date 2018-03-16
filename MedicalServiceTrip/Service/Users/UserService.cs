@@ -186,7 +186,7 @@ namespace Service.Users
 
         }
 
-        public bool ChangeUserPin(int userId, int pinCode)
+        public bool ChangeUserPin(int userId, int pinCode,string password)
         {
             if (userId <= 0)
                 throw new ArgumentNullException(nameof(userId));
@@ -195,8 +195,13 @@ namespace Service.Users
                 throw new ArgumentNullException(nameof(pinCode));
 
             var user = _userRepository.GetById(userId);
-            if(user != null)
+            
+            if (user != null)
             {
+                var salt = user.PasswordSalt;
+                password = _webHelper.ComputeHash(password, salt);
+                if (!user.Password.Equals(password))
+                    throw new Exception("Oops! Invalid Password");
                 user.PinCode = pinCode;
                 _userRepository.Update(user);
                 return true;

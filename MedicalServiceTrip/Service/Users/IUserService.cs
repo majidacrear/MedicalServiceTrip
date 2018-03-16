@@ -59,6 +59,6 @@ namespace Service.Users
         /// <param name="userId">user id</param>
         /// <param name="pinCode">new pin code</param>
         /// <returns></returns>
-        bool ChangeUserPin(int userId, int pinCode);
+        bool ChangeUserPin(int userId, int pinCode,string password);
     }
 }

@@ -160,10 +160,11 @@ namespace MedicalServiceTrip.Controllers
         {
             var userId = (int)jObject["UserId"];
             var pinCode = (int)jObject["PinCode"];
+            var password = (string)jObject["Password"];
             var response = new ServiceResponse<bool>();
             try
-            {
-                _userService.ChangeUserPin(userId, pinCode);
+            {               
+                _userService.ChangeUserPin(userId, pinCode,password);
                 response.Model = true;
                 response.Success = true;
             }
