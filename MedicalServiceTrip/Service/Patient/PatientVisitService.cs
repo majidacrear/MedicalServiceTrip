@@ -44,14 +44,14 @@ namespace Service.Patient
         {
             if (patientVisit == null)
                 throw new ArgumentNullException(nameof(patientVisit));
-            if (patientVisit.Id <= 0 && _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted).Count() == 0)
+            if (patientVisit.Id <= 0 && _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted && pv.PatientId == patientVisit.PatientId).Count() == 0)
             {
                 patientVisit.CreatedDate = DateTime.Now;
                 _patientVisitRepository.Insert(patientVisit);
             }
             else
             {
-                patientVisit.Id = _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted).First().Id;
+                patientVisit.Id = _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted && pv.PatientId == patientVisit.PatientId).First().Id;
             }
             if(patientVisit.VitalSigns != null) /// Add Or Update Vital Signs during patient visit.
             {
