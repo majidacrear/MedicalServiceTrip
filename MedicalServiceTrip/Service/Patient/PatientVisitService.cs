@@ -17,16 +17,23 @@ namespace Service.Patient
         private readonly IRepository<VitalSigns> _vitalSignsRepository;
 
         private readonly IRepository<PatientVisitCheifComplain> _cheifComplainRepository;
+
+        private readonly IRepository<PatientVisitDiagnosis> _pateintVisitDiagnosis;
+
+        private readonly IRepository<PatientVisitPrescription> _pateintVisitPrescription;
         #endregion
 
         #region Cors
 
         public PatientVisitService(IRepository<PatientVisit> patientVisitRepository, IRepository<VitalSigns> vitalSignsRepository
-                            , IRepository<PatientVisitCheifComplain> cheifComplainRepository)
+                            , IRepository<PatientVisitCheifComplain> cheifComplainRepository,IRepository<PatientVisitDiagnosis> pateintVisitDiagnosis
+                            , IRepository<PatientVisitPrescription> pateintVisitPrescription)
         {
             _patientVisitRepository = patientVisitRepository;
             _vitalSignsRepository = vitalSignsRepository;
             _cheifComplainRepository = cheifComplainRepository;
+            _pateintVisitDiagnosis = pateintVisitDiagnosis;
+            _pateintVisitPrescription = pateintVisitPrescription;
         }
         #endregion
 
@@ -37,39 +44,128 @@ namespace Service.Patient
         {
             if (patientVisit == null)
                 throw new ArgumentNullException(nameof(patientVisit));
-            if(patientVisit.Id<=0)
+            if (patientVisit.Id <= 0 && _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted).Count() == 0)
             {
                 patientVisit.CreatedDate = DateTime.Now;
                 _patientVisitRepository.Insert(patientVisit);
             }
+            else
+            {
+                patientVisit.Id = _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted).First().Id;
+            }
             if(patientVisit.VitalSigns != null) /// Add Or Update Vital Signs during patient visit.
             {
+                var vitalSigns = _vitalSignsRepository.Table.Where(vs => vs.PatientVisitId == patientVisit.Id).FirstOrDefault();
+                if (vitalSigns != null)
+                {
+                    patientVisit.VitalSigns.Id = vitalSigns.Id;
+                }
+                patientVisit.VitalSigns.PatientVisitId = patientVisit.Id;
                 if (patientVisit.VitalSigns.Id <= 0)
                 {
+                    patientVisit.VitalSigns.CreatedDate = DateTime.Now;
                     _vitalSignsRepository.Insert(patientVisit.VitalSigns);
                 }
                 else
                 {
-                    _vitalSignsRepository.Update(patientVisit.VitalSigns);
+                    vitalSigns.BloodPressure = patientVisit.VitalSigns.BloodPressure;
+                    vitalSigns.Glucose = patientVisit.VitalSigns.Glucose;
+                    vitalSigns.HeartRate = patientVisit.VitalSigns.HeartRate;
+                    vitalSigns.Height = patientVisit.VitalSigns.Height;
+                    vitalSigns.O2Saturation = patientVisit.VitalSigns.O2Saturation;
+                    vitalSigns.RespirationRate = patientVisit.VitalSigns.RespirationRate;
+                    vitalSigns.Temprature = patientVisit.VitalSigns.Temprature;
+                    vitalSigns.Weight = patientVisit.VitalSigns.Weight;
+                    vitalSigns.UpdatedDate = DateTime.Now;
+                    _vitalSignsRepository.Update(vitalSigns);
+                    patientVisit.VitalSigns = vitalSigns;
                 }
             }
 
             if(patientVisit.PatientVisitCheifComplain != null)
             {
-                
-                _cheifComplainRepository.Insert(patientVisit.PatientVisitCheifComplain);
+                foreach(var pvcc in patientVisit.PatientVisitCheifComplain)
+                {
+                    var patientVisitCC = _cheifComplainRepository.Table.Where(pcc => pcc.CheifComplainId == pvcc.CheifComplainId && pcc.PatientVisitId == patientVisit.Id).FirstOrDefault();
+                    if (patientVisitCC == null)
+                        pvcc.PatientVisitId = patientVisit.Id;
+                    else
+                        pvcc.Id = patientVisitCC.Id;
+                    if (pvcc.Id <=0)
+                    {                        
+                        pvcc.CreatedDate = DateTime.Now;
+                        _cheifComplainRepository.Insert(pvcc);
+                    }
+                }
+                var ccIdArray = patientVisit.PatientVisitCheifComplain.Select(pvcc => pvcc.CheifComplainId).ToArray();
+                var deletedList = _cheifComplainRepository.Table.Where(pvcc => !ccIdArray.Contains(pvcc.CheifComplainId) && pvcc.PatientVisitId == patientVisit.Id).ToArray();
+                if (deletedList != null)
+                {
+                    _cheifComplainRepository.Delete(deletedList);
+                }
+            }
+            else
+            {
+                _cheifComplainRepository.Delete(_cheifComplainRepository.Table.Where(pvcc => pvcc.PatientVisitId == patientVisit.Id).ToArray());
+            }
+
+            if(patientVisit.PatientVisitDiagnosis != null)
+            {
+                foreach(var pvd in patientVisit.PatientVisitDiagnosis)
+                {
+                    if(pvd.Id <= 0)
+                    {
+                        pvd.PatientVisitId = patientVisit.Id;
+                        _pateintVisitDiagnosis.Insert(pvd);
+                    }
+                    else
+                    {
+                        _pateintVisitDiagnosis.Update(pvd);
+                    }
+                }
+
+                // Delete those entries which were previously added and remove this time.
+                var diagnosisIdArray = patientVisit.PatientVisitDiagnosis.Select(pvd => pvd.DiagnosisId).ToArray();
+                var deletedList = _pateintVisitDiagnosis.Table.Where(pvd => !diagnosisIdArray.Contains(pvd.DiagnosisId) && pvd.PatientVisitId == patientVisit.Id).ToArray();
+                if(deletedList!= null)
+                {
+                    _pateintVisitDiagnosis.Delete(deletedList);
+                }
+            }
+
+            if(patientVisit.PatientVisitPrescription != null)
+            {
+                foreach(var pvp in patientVisit.PatientVisitPrescription)
+                {
+                    if(pvp.Id <=0)
+                    {
+                        pvp.PatientVisitId = patientVisit.Id;
+                        _pateintVisitPrescription.Insert(pvp);
+                    }
+                    else
+                    {
+                        _pateintVisitPrescription.Update(pvp);
+                    }
+                }
+
+                var prescriptionIdArray = patientVisit.PatientVisitPrescription.Select(pvp => pvp.OrganizationPharmacyId).ToArray();
+                var deletedList = _pateintVisitPrescription.Table.Where(pvp => !prescriptionIdArray.Contains(pvp.OrganizationPharmacyId) && pvp.PatientVisitId == patientVisit.Id).ToArray();
+                if (deletedList != null)
+                {
+                    _pateintVisitPrescription.Delete(deletedList);
+                }
             }
             return patientVisit;
         }
 
         public PatientVisit GetPatientVisitByPatientId(int patientId)
         {
-            return _patientVisitRepository.Table.Where(pv => pv.PatientId == patientId && pv.VisitCompleted == false).FirstOrDefault();
+            return _patientVisitRepository.Table.Where(pv => pv.PatientId == patientId && pv.VisitCompleted == false && pv.IsDeleted == false).FirstOrDefault();
         }
 
         public IEnumerable<PatientVisit> GetPatientVisitHistory(int patientId)
         {
-            return _patientVisitRepository.Table.Where(pv => pv.PatientId == patientId && pv.VisitCompleted == true).ToList();
+            return _patientVisitRepository.Table.Where(pv => pv.PatientId == patientId && pv.VisitCompleted == true && pv.IsDeleted == false).ToList();
         }
         #endregion
     }

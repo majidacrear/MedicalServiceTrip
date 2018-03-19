@@ -6,11 +6,13 @@ using Core.Infrastructure;
 using Core.Infrastructure.DependencyManagement;
 using Data;
 using Framework.MVC.Routing;
+using Service.CheifComplain;
 using Service.Country;
 using Service.Email;
 using Service.Gender;
 using Service.Installation;
 using Service.Organization;
+using Service.OrganizationPharmacy;
 using Service.Patient;
 using Service.Storage;
 using Service.Users;
@@ -71,6 +73,8 @@ namespace Framework.Infrastructure
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerLifetimeScope();
             builder.RegisterType<PatientService>().As<IPatientService>().InstancePerLifetimeScope();
             builder.RegisterType<PatientVisitService>().As<IPatientVisitService>().InstancePerLifetimeScope();
+            builder.RegisterType<OrganizationPharmacyService>().As<IOrganizationPharmacyService>().InstancePerLifetimeScope();
+            builder.RegisterType<CheifComplainService>().As<ICheifComplainService>().InstancePerLifetimeScope();
             builder.RegisterType<AzureStorage>().As<IStorage>().InstancePerLifetimeScope();
             //installation service
 

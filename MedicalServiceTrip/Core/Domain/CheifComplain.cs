@@ -10,7 +10,7 @@ namespace Core.Domain
     {
         public string Name { get; set; }
 
-        public int ParentCheifComplainId { get; set; }
+        public int? ParentCheifComplainId { get; set; }
 
         public int OrganizationId { get; set; }
 

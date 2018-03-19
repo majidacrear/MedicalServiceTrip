@@ -49,7 +49,27 @@ namespace Service.Patient
         
         public IEnumerable<Core.Domain.Patient> GetAllPatientByOrganizationAndUserId(int organizationnId,int userId)
         {
-            return _patientRepository.Table.Where(p => p.OrganizationId == organizationnId && p.DoctorId == userId && p.IsDeleted == false).ToList();
+            var patientList = _patientRepository.Table.Where(p => p.OrganizationId == organizationnId && p.DoctorId == userId && p.IsDeleted == false).ToList();
+            foreach(var patient in patientList)
+            {
+                if(patient.PatientVisit != null && patient.PatientVisit.Where(pv=>pv.VisitCompleted == false).Count() > 0)
+                {
+                    if(patient.PatientVisit.Where(pv=>pv.VisitCompleted ==false && pv.VitalSigns == null).Count()== 1)
+                    {
+                        patient.PatientVisitStatus = "Waiting";
+                    }
+                    else if(patient.PatientVisit.Where(pv => pv.VisitCompleted == false && pv.VitalSigns != null).Count() == 1)
+                    {
+                        patient.PatientVisitStatus = "Active";
+                    }
+                    else
+                    {
+                        patient.PatientVisitStatus = "Completed";
+                    }
+                }
+            }
+
+            return patientList;
         }
 
         public Core.Domain.Patient GetPatientById(int patientId)

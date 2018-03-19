@@ -21,5 +21,7 @@ namespace Core.Domain
         public virtual IEnumerable<PatientVisitDiagnosis> PatientVisitDiagnosis { get; set; }
 
         public virtual IEnumerable<PatientVisitCheifComplain> PatientVisitCheifComplain { get; set; }
+
+        public virtual IEnumerable<PatientVisitPrescription> PatientVisitPrescription { get; set; }
     }
 }
