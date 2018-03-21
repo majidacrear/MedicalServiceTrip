@@ -12,6 +12,8 @@ namespace Core.Domain
 
         public int? ParentCheifComplainId { get; set; }
 
+        public int Level { get; set; }
+
         public int OrganizationId { get; set; }
 
         public CheifComplain ParentCheifComplain { get; set; }
