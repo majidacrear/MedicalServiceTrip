@@ -52,6 +52,7 @@ namespace Service.Patient
             else
             {
                 patientVisit.Id = _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted && pv.PatientId == patientVisit.PatientId).First().Id;
+                //_patientVisitRepository.Update(patientVisit);
             }
             if(patientVisit.VitalSigns != null) /// Add Or Update Vital Signs during patient visit.
             {

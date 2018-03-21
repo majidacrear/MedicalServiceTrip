@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,11 +30,11 @@ namespace Core.Domain
         /// </summary>
         public  int DoctorId { get; set; }
 
-
+        [JsonIgnore]
         public virtual Users Doctor { get; set; }
-
+        [JsonIgnore]
         public virtual Gender Gender { get; set; }
-
+        [JsonIgnore]
         public virtual Organization Organization { get; set; }
 
         public virtual ICollection<PatientVisit> PatientVisit { get; set; }

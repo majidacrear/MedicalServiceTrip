@@ -14,22 +14,24 @@ namespace Service.Patient
 
         private readonly IRepository<Core.Domain.Patient> _patientRepository;
         private readonly IRepository<Core.Domain.Users> _userRepository;
+        private readonly IRepository<PatientVisit> _patientVisitRepository;
 
         #endregion
 
         #region Cors
 
-        public PatientService(IRepository<Core.Domain.Patient> patientRepository,IRepository<Core.Domain.Users> userRepository)
+        public PatientService(IRepository<Core.Domain.Patient> patientRepository,IRepository<Core.Domain.Users> userRepository, IRepository<PatientVisit> patientVisitRepository)
         {
             this._patientRepository = patientRepository;
             this._userRepository = userRepository;
+            _patientVisitRepository = patientVisitRepository;
         }
         #endregion
 
         public Core.Domain.Patient AddPatient(Core.Domain.Patient patient)
         {
             if (patient == null)
-                throw new ArgumentNullException(nameof(patient));
+                throw new ArgumentNullException(nameof(patient));            
             var checkPatient = _patientRepository.Table.Where(p => p.PatientIdNumber == patient.PatientIdNumber).FirstOrDefault();
             if (checkPatient == null)
             {
@@ -52,13 +54,14 @@ namespace Service.Patient
             var patientList = _patientRepository.Table.Where(p => p.OrganizationId == organizationnId && p.DoctorId == userId && p.IsDeleted == false).ToList();
             foreach(var patient in patientList)
             {
-                if(patient.PatientVisit != null && patient.PatientVisit.Where(pv=>pv.VisitCompleted == false).Count() > 0)
+                var patientVisit = _patientVisitRepository.Table.Where(pv => pv.PatientId == patient.Id).ToList();
+                if(patientVisit != null && patientVisit.Where(pv=>pv.VisitCompleted == false).Count() > 0)
                 {
-                    if(patient.PatientVisit.Where(pv=>pv.VisitCompleted ==false && pv.VitalSigns == null).Count()== 1)
+                    if(patientVisit.Where(pv=>pv.VisitCompleted ==false && pv.VitalSigns == null).Count()== 1)
                     {
                         patient.PatientVisitStatus = "Waiting";
                     }
-                    else if(patient.PatientVisit.Where(pv => pv.VisitCompleted == false && pv.VitalSigns != null).Count() == 1)
+                    else if(patientVisit.Where(pv => pv.VisitCompleted == false && pv.VitalSigns != null).Count() == 1)
                     {
                         patient.PatientVisitStatus = "Active";
                     }

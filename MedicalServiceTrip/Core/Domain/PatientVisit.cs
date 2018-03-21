@@ -14,7 +14,7 @@ namespace Core.Domain
 
         public bool VisitCompleted { get; set; }
 
-        public virtual Patient Patient { get; set; }
+        public Patient Patient { get; set; }
 
         public virtual VitalSigns VitalSigns { get; set; }
 
