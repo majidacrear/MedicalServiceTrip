@@ -175,6 +175,24 @@ namespace MedicalServiceTrip.Controllers
             }
             return response;
         }
+
+        [HttpPost]
+        [ActionName("GetNonOrganizationUsers")]
+        public ServiceResponse<IEnumerable<Core.Domain.Users>> GetNonOrganizationUsers()
+        {
+            var response = new ServiceResponse<IEnumerable<Core.Domain.Users>>();
+            try
+            {
+                response.Model = _userService.GetNonOrganizationUsers();
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = GetErrorMessageDetail(ex);
+            }
+            return response;
+        }
         #endregion
 
         #region Private Methods

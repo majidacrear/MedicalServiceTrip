@@ -60,5 +60,11 @@ namespace Service.Users
         /// <param name="pinCode">new pin code</param>
         /// <returns></returns>
         bool ChangeUserPin(int userId, int pinCode,string password);
+
+        /// <summary>
+        /// Get non organization users
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Core.Domain.Users> GetNonOrganizationUsers();
     }
 }

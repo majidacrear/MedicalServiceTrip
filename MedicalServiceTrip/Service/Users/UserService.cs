@@ -117,6 +117,10 @@ namespace Service.Users
             {
                 user.IsActive = false;
             }
+            else if(user.OrganizationId == 0 || user.OrganizationId == null)
+            {
+                user.IsActive = true;
+            }
             user.MyCode = GetRefferalCode();            
             user.IsDeleted = false;
             user.CreatedDate = DateTime.Now;
@@ -214,6 +218,11 @@ namespace Service.Users
             {
                 throw new Exception("Invlaid User Id");
             }
+        }
+
+        public IEnumerable<Core.Domain.Users> GetNonOrganizationUsers()
+        {
+            return this._userRepository.Table.Where(u => (u.OrganizationId == 0 || u.OrganizationId == null) && u.IsDeleted == false).ToList();
         }
 
         private string GetRefferalCode()
@@ -338,5 +347,6 @@ namespace Service.Users
 
             _cheifComplainRepository.Insert(redFlag6);
         }
+       
     }
 }
