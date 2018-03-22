@@ -46,42 +46,30 @@ namespace Service.Patient
                 throw new ArgumentNullException(nameof(patientVisit));
             if (patientVisit.Id <= 0 && _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted && pv.PatientId == patientVisit.PatientId).Count() == 0)
             {
-                patientVisit.CreatedDate = DateTime.Now;
-                _patientVisitRepository.Insert(patientVisit);
+                var pv = new PatientVisit() {  //This object is created to avoid related entities saving issue. If original object(patientVisit) is saved with related entities then it throws error.
+                    PatientId = patientVisit.PatientId,
+                    VisitCompleted = patientVisit.VisitCompleted,
+                    PatientHistory = patientVisit.PatientHistory,
+                    CreatedDate = DateTime.Now
+                };
+                _patientVisitRepository.Insert(pv);
+                patientVisit.Id = pv.Id;
             }
             else
             {
-                patientVisit.Id = _patientVisitRepository.Table.Where(pv => !pv.VisitCompleted && pv.PatientId == patientVisit.PatientId).First().Id;
-                //_patientVisitRepository.Update(patientVisit);
-            }
-            if(patientVisit.VitalSigns != null) /// Add Or Update Vital Signs during patient visit.
-            {
-                var vitalSigns = _vitalSignsRepository.Table.Where(vs => vs.PatientVisitId == patientVisit.Id).FirstOrDefault();
-                if (vitalSigns != null)
+                var pv = _patientVisitRepository.GetById(patientVisit.Id);
+                if (pv == null)
+                    pv = _patientVisitRepository.Table.Where(pv1 => !pv1.VisitCompleted && pv1.PatientId == patientVisit.PatientId).FirstOrDefault();
+                if (pv != null)
                 {
-                    patientVisit.VitalSigns.Id = vitalSigns.Id;
-                }
-                patientVisit.VitalSigns.PatientVisitId = patientVisit.Id;
-                if (patientVisit.VitalSigns.Id <= 0)
-                {
-                    patientVisit.VitalSigns.CreatedDate = DateTime.Now;
-                    _vitalSignsRepository.Insert(patientVisit.VitalSigns);
-                }
-                else
-                {
-                    vitalSigns.BloodPressure = patientVisit.VitalSigns.BloodPressure;
-                    vitalSigns.Glucose = patientVisit.VitalSigns.Glucose;
-                    vitalSigns.HeartRate = patientVisit.VitalSigns.HeartRate;
-                    vitalSigns.Height = patientVisit.VitalSigns.Height;
-                    vitalSigns.O2Saturation = patientVisit.VitalSigns.O2Saturation;
-                    vitalSigns.RespirationRate = patientVisit.VitalSigns.RespirationRate;
-                    vitalSigns.Temprature = patientVisit.VitalSigns.Temprature;
-                    vitalSigns.Weight = patientVisit.VitalSigns.Weight;
-                    vitalSigns.UpdatedDate = DateTime.Now;
-                    _vitalSignsRepository.Update(vitalSigns);
-                    patientVisit.VitalSigns = vitalSigns;
+                    pv.VisitCompleted = patientVisit.VisitCompleted;
+                    pv.PatientHistory = patientVisit.PatientHistory;
+                    pv.UpdatedDate = DateTime.Now;
+                    _patientVisitRepository.Update(pv);
                 }
             }
+
+            SaveVitalSigns(patientVisit);
 
             if(patientVisit.PatientVisitCheifComplain != null)
             {
@@ -168,6 +156,44 @@ namespace Service.Patient
         {
             return _patientVisitRepository.Table.Where(pv => pv.PatientId == patientId && pv.VisitCompleted == true && pv.IsDeleted == false).ToList();
         }
+
+        #region Protected
+
+        protected void SaveVitalSigns(PatientVisit patientVisit)
+        {
+            if (patientVisit.VitalSigns != null) /// Add Or Update Vital Signs during patient visit.
+            {
+                var vitalSigns = _vitalSignsRepository.Table.Where(vs => vs.PatientVisitId == patientVisit.Id).FirstOrDefault();
+                if (vitalSigns != null)
+                {
+                    patientVisit.VitalSigns.Id = vitalSigns.Id;
+                }
+                patientVisit.VitalSigns.PatientVisitId = patientVisit.Id;
+                if (patientVisit.VitalSigns.Id <= 0)
+                {
+                    patientVisit.VitalSigns.CreatedDate = DateTime.Now;
+                    _vitalSignsRepository.Insert(patientVisit.VitalSigns);
+                }
+                else
+                {
+                    vitalSigns.BloodPressure = patientVisit.VitalSigns.BloodPressure;
+                    vitalSigns.Glucose = patientVisit.VitalSigns.Glucose;
+                    vitalSigns.HeartRate = patientVisit.VitalSigns.HeartRate;
+                    vitalSigns.Height = patientVisit.VitalSigns.Height;
+                    vitalSigns.O2Saturation = patientVisit.VitalSigns.O2Saturation;
+                    vitalSigns.RespirationRate = patientVisit.VitalSigns.RespirationRate;
+                    vitalSigns.Temprature = patientVisit.VitalSigns.Temprature;
+                    vitalSigns.Weight = patientVisit.VitalSigns.Weight;
+                    vitalSigns.UpdatedDate = DateTime.Now;
+                    _vitalSignsRepository.Update(vitalSigns);
+                    patientVisit.VitalSigns = vitalSigns;
+                }
+            }
+        }
+
         #endregion
+        #endregion
+
+
     }
 }

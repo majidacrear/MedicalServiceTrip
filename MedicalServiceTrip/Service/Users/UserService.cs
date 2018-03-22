@@ -16,6 +16,7 @@ namespace Service.Users
         private readonly IRepository<Core.Domain.Organization> _organizationRepository;
         private readonly IRepository<Core.Domain.UserRewardPoint> _userRewardPointRepository;
         private readonly IWebHelper _webHelper;
+        private readonly IRepository<Core.Domain.CheifComplain> _cheifComplainRepository;
         #endregion
 
         #region Cors
@@ -23,12 +24,14 @@ namespace Service.Users
         public UserService(IRepository<Core.Domain.Users> userRepository,
             IRepository<Core.Domain.Organization> organizationRepository, 
             IRepository<UserRewardPoint> userRewardPointRepository,
-            IWebHelper webHelper)
+            IWebHelper webHelper,
+            IRepository<Core.Domain.CheifComplain> cheifComplainRepository)
         {
             this._userRepository = userRepository;
             this._organizationRepository = organizationRepository;
             this._userRewardPointRepository = userRewardPointRepository;
             this._webHelper = webHelper;
+            this._cheifComplainRepository = cheifComplainRepository;
         }
         #endregion
 
@@ -100,6 +103,7 @@ namespace Service.Users
                     user.Organization.CreatedDate = DateTime.Now;
                     _organizationRepository.Insert(user.Organization);
                     user.OrganizationId = user.Organization.Id;
+                    RegisterInitialDataForOrganization(user.OrganizationId.Value);
                 }
                 else
                 {
@@ -223,6 +227,116 @@ namespace Service.Users
             return result;
         }
 
+        private void RegisterInitialDataForOrganization(int organizationId)
+        {
+            Core.Domain.CheifComplain cheifComplain = new Core.Domain.CheifComplain()
+            {
+                Name = "CC 1",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 1
+            };
 
+            _cheifComplainRepository.Insert(cheifComplain);
+
+            Core.Domain.CheifComplain diagnostic = new Core.Domain.CheifComplain()
+            {
+                Name = "DX 1",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 2,
+                ParentCheifComplainId = cheifComplain.Id
+            };
+
+            _cheifComplainRepository.Insert(diagnostic);
+
+            Core.Domain.CheifComplain diagnostic2 = new Core.Domain.CheifComplain()
+            {
+                Name = "dx 2",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 2,
+                ParentCheifComplainId = cheifComplain.Id
+            };
+
+            _cheifComplainRepository.Insert(diagnostic2);
+
+            Core.Domain.CheifComplain diagnostic3 = new Core.Domain.CheifComplain()
+            {
+                Name = "dx 3",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 2,
+                ParentCheifComplainId = cheifComplain.Id
+            };
+
+            _cheifComplainRepository.Insert(diagnostic3);
+
+            Core.Domain.CheifComplain redFlag = new Core.Domain.CheifComplain()
+            {
+                Name = "RF 1",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 3,
+                ParentCheifComplainId = diagnostic.Id
+            };
+
+            _cheifComplainRepository.Insert(redFlag);
+
+            Core.Domain.CheifComplain redFlag2 = new Core.Domain.CheifComplain()
+            {
+                Name = "RF 2",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 3,
+                ParentCheifComplainId = diagnostic.Id
+            };
+
+            _cheifComplainRepository.Insert(redFlag2);
+
+            Core.Domain.CheifComplain redFlag3 = new Core.Domain.CheifComplain()
+            {
+                Name = "RF 3",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 3,
+                ParentCheifComplainId = diagnostic.Id
+            };
+
+            _cheifComplainRepository.Insert(redFlag3);
+
+            Core.Domain.CheifComplain redFlag4 = new Core.Domain.CheifComplain()
+            {
+                Name = "RF 4",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 3,
+                ParentCheifComplainId = diagnostic2.Id
+            };
+
+            _cheifComplainRepository.Insert(redFlag4);
+
+            Core.Domain.CheifComplain redFlag5 = new Core.Domain.CheifComplain()
+            {
+                Name = "RF 5",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 3,
+                ParentCheifComplainId = diagnostic2.Id
+            };
+
+            _cheifComplainRepository.Insert(redFlag5);
+
+            Core.Domain.CheifComplain redFlag6 = new Core.Domain.CheifComplain()
+            {
+                Name = "RF 6",
+                CreatedDate = DateTime.Now,
+                OrganizationId = organizationId,
+                Level = 3,
+                ParentCheifComplainId = diagnostic3.Id
+            };
+
+            _cheifComplainRepository.Insert(redFlag6);
+        }
     }
 }
