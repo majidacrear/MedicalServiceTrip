@@ -64,11 +64,11 @@ namespace Service.Patient
                     else if(patientVisit.Where(pv => pv.VisitCompleted == false && pv.VitalSigns != null).Count() == 1)
                     {
                         patient.PatientVisitStatus = "Active";
-                    }
-                    else
-                    {
-                        patient.PatientVisitStatus = "Completed";
-                    }
+                    }                    
+                }
+                else if(patientVisit != null && patientVisit.Count() > 0)
+                {
+                    patient.PatientVisitStatus = "Completed";
                 }
             }
 
