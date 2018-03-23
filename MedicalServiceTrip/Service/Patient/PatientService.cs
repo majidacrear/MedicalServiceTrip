@@ -32,7 +32,7 @@ namespace Service.Patient
         {
             if (patient == null)
                 throw new ArgumentNullException(nameof(patient));            
-            var checkPatient = _patientRepository.Table.Where(p => p.PatientIdNumber == patient.PatientIdNumber).FirstOrDefault();
+            var checkPatient = _patientRepository.Table.Where(p => p.PatientIdNumber == patient.PatientIdNumber && p.OrganizationId == patient.OrganizationId).FirstOrDefault();
             if (checkPatient == null)
             {
                 patient.CreatedDate = DateTime.Now;
