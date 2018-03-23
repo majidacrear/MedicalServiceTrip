@@ -27,7 +27,7 @@ namespace Core.Domain
 
         public int PatientVisitId { get; set; }
 
-        [JsonIgnore]
+        
         public PatientVisit PatientVisit { get; set; }
 
 
