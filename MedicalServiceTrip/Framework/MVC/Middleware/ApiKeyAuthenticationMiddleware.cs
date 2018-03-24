@@ -95,7 +95,8 @@ namespace Framework.MVC.Middleware
 
     internal class ExcludeApiUrlForAuthentication
     {
-        public static string[] ExcludeList = { "/api/User/RegisterUser" ,
+        public static string[] ExcludeList = {  "/api/",
+                                                "/api/User/RegisterUser" ,
                                                 "/api/User/VerifyUser",
                                                 "/api/Organization/CheckOrganizationExist",
                                                  "/api/Organization/GetAllOrganization",

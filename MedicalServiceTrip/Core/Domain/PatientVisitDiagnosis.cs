@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,10 @@ namespace Core.Domain
         public int PatientVisitId { get; set; }
 
         public int DiagnosisId { get; set; }
-
+        //[JsonIgnore]
         public PatientVisit PatientVisit { get; set; }
 
-        public Diagnosis Diagnosis { get; set; }
+        [JsonIgnore]
+        public CheifComplain Diagnosis { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace Core.Domain
         /// </summary>
         public string MyCode { get; set; }
 
-        public Organization Organization { get; set; }
+        public virtual Organization Organization { get; set; }
 
         [JsonIgnore]
         public Country Country { get; set; }

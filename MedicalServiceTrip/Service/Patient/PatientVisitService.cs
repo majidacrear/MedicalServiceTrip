@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Data;
 using Core.Domain;
+using System.Data.Entity;
 
 namespace Service.Patient
 {
@@ -105,7 +106,8 @@ namespace Service.Patient
                     if(pvd.Id <= 0)
                     {
                         pvd.PatientVisitId = patientVisit.Id;
-                        _pateintVisitDiagnosis.Insert(pvd);
+                        if (_pateintVisitDiagnosis.TableNoTracking.Where(pvd1 => pvd1.PatientVisitId == pvd.PatientVisitId && pvd1.DiagnosisId == pvd.DiagnosisId).Count() == 0)
+                            _pateintVisitDiagnosis.Insert(pvd);
                     }
                     else
                     {
@@ -144,6 +146,8 @@ namespace Service.Patient
                     _pateintVisitPrescription.Delete(deletedList);
                 }
             }
+
+            patientVisit = _patientVisitRepository.Table.Include(pv=>pv.VitalSigns).Where(pv => pv.Id == patientVisit.Id).FirstOrDefault();
             return patientVisit;
         }
 
@@ -166,27 +170,28 @@ namespace Service.Patient
                 var vitalSigns = _vitalSignsRepository.Table.Where(vs => vs.PatientVisitId == patientVisit.Id).FirstOrDefault();
                 if (vitalSigns != null)
                 {
-                    patientVisit.VitalSigns.Id = vitalSigns.Id;
+                    patientVisit.VitalSigns.ElementAtOrDefault(0).Id = vitalSigns.Id;
                 }
-                patientVisit.VitalSigns.PatientVisitId = patientVisit.Id;
-                if (patientVisit.VitalSigns.Id <= 0)
+                patientVisit.VitalSigns.ElementAtOrDefault(0).PatientVisitId = patientVisit.Id;
+                if (patientVisit.VitalSigns.ElementAtOrDefault(0).Id <= 0)
                 {
-                    patientVisit.VitalSigns.CreatedDate = DateTime.Now;
+                    patientVisit.VitalSigns.ElementAtOrDefault(0).CreatedDate = DateTime.Now;
                     _vitalSignsRepository.Insert(patientVisit.VitalSigns);
                 }
                 else
                 {
-                    vitalSigns.BloodPressure = patientVisit.VitalSigns.BloodPressure;
-                    vitalSigns.Glucose = patientVisit.VitalSigns.Glucose;
-                    vitalSigns.HeartRate = patientVisit.VitalSigns.HeartRate;
-                    vitalSigns.Height = patientVisit.VitalSigns.Height;
-                    vitalSigns.O2Saturation = patientVisit.VitalSigns.O2Saturation;
-                    vitalSigns.RespirationRate = patientVisit.VitalSigns.RespirationRate;
-                    vitalSigns.Temprature = patientVisit.VitalSigns.Temprature;
-                    vitalSigns.Weight = patientVisit.VitalSigns.Weight;
+                    vitalSigns.BloodPressure = patientVisit.VitalSigns.ElementAtOrDefault(0).BloodPressure;
+                    vitalSigns.Glucose = patientVisit.VitalSigns.ElementAtOrDefault(0).Glucose;
+                    vitalSigns.HeartRate = patientVisit.VitalSigns.ElementAtOrDefault(0).HeartRate;
+                    vitalSigns.Height = patientVisit.VitalSigns.ElementAtOrDefault(0).Height;
+                    vitalSigns.O2Saturation = patientVisit.VitalSigns.ElementAtOrDefault(0).O2Saturation;
+                    vitalSigns.RespirationRate = patientVisit.VitalSigns.ElementAtOrDefault(0).RespirationRate;
+                    vitalSigns.Temprature = patientVisit.VitalSigns.ElementAtOrDefault(0).Temprature;
+                    vitalSigns.Weight = patientVisit.VitalSigns.ElementAtOrDefault(0).Weight;
                     vitalSigns.UpdatedDate = DateTime.Now;
                     _vitalSignsRepository.Update(vitalSigns);
-                    patientVisit.VitalSigns = vitalSigns;
+                    patientVisit.VitalSigns.Clear();
+                    patientVisit.VitalSigns.Add(vitalSigns);
                 }
             }
         }

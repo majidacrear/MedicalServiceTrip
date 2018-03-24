@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Core;
 using Core.Data;
 using Core.Domain;
+using System.Data.Entity;
 
 namespace Service.Users
 {

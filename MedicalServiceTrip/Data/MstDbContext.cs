@@ -23,7 +23,8 @@ namespace Data
         public MstDbContext(string nameOrConnectionString)
             : base(nameOrConnectionString)
         {
-            //((IObjectContextAdapter) this).ObjectContext.ContextOptions.LazyLoadingEnabled = true;
+            ((IObjectContextAdapter) this).ObjectContext.ContextOptions.LazyLoadingEnabled = true;
+            ((IObjectContextAdapter)this).ObjectContext.ContextOptions.ProxyCreationEnabled = true;
         }
 
         #endregion

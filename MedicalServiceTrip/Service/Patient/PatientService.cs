@@ -56,7 +56,7 @@ namespace Service.Patient
         
         public IEnumerable<Core.Domain.Patient> GetAllPatientByOrganizationAndUserId(int organizationnId,int userId)
         {
-            var patientList = _patientRepository.Table.Where(p => p.OrganizationId == organizationnId && p.DoctorId == userId && p.IsDeleted == false).ToList();
+            var patientList = _patientRepository.TableNoTracking.Where(p => p.OrganizationId == organizationnId && p.DoctorId == userId && p.IsDeleted == false).ToList();
             foreach(var patient in patientList)
             {
                 var patientVisit = _patientVisitRepository.Table.Where(pv => pv.PatientId == patient.Id).Include(pv=>pv.VitalSigns).ToList();

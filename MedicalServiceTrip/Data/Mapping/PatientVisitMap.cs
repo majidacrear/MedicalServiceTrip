@@ -15,7 +15,7 @@ namespace Data.Mapping
             this.HasKey(e => e.Id);
             this.Property(e => e.PatientHistory).IsOptional().HasMaxLength(8000);
             this.Property(e => e.CreatedDate).IsRequired();
-            this.HasRequired(e => e.Patient).WithMany().HasForeignKey(e => e.PatientId).WillCascadeOnDelete(false);
+            this.HasRequired(e => e.Patient).WithMany(e => e.PatientVisit).HasForeignKey(e => e.PatientId).WillCascadeOnDelete(false);
         }
     }
 }

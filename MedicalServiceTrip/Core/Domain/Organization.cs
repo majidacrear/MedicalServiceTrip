@@ -10,5 +10,6 @@ namespace Core.Domain
     {
         public string OrganizationName { get; set; }
         
+        
     }
 }

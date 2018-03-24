@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -152,10 +154,16 @@ namespace Core.Infrastructure
             CommonHelper.BaseDirectory = hostingEnvironment.ContentRootPath;
 
             //initialize plugins
-            var mvcCoreBuilder = services.AddMvc().AddJsonOptions(options =>
+            var mvcCoreBuilder = services.AddMvc().AddJsonOptions(o =>
             {
-                options.SerializerSettings.ContractResolver
-                    = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                o.SerializerSettings.ContractResolver
+                    = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+                o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                o.SerializerSettings.Converters.Add(new StringEnumConverter());
+                o.SerializerSettings.Formatting = Formatting.Indented;
+                o.SerializerSettings.NullValueHandling = NullValueHandling.Include;
+                o.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                o.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
             });
         }
 

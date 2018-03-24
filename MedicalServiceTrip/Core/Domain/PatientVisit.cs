@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +15,15 @@ namespace Core.Domain
 
         public bool VisitCompleted { get; set; }
 
-        public Patient Patient { get; set; }
+        [JsonIgnore]
+        public virtual Patient Patient { get; set; }
 
-        public virtual VitalSigns VitalSigns { get; set; }
+        public virtual ICollection<VitalSigns> VitalSigns { get; set; }
 
-        public virtual IEnumerable<PatientVisitDiagnosis> PatientVisitDiagnosis { get; set; }
+        public virtual ICollection<PatientVisitDiagnosis> PatientVisitDiagnosis { get; set; }
 
-        public virtual IEnumerable<PatientVisitCheifComplain> PatientVisitCheifComplain { get; set; }
+        public virtual ICollection<PatientVisitCheifComplain> PatientVisitCheifComplain { get; set; }
 
-        public virtual IEnumerable<PatientVisitPrescription> PatientVisitPrescription { get; set; }
+        public virtual ICollection<PatientVisitPrescription> PatientVisitPrescription { get; set; }
     }
 }

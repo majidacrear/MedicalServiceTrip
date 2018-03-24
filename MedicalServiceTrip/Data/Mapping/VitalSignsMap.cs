@@ -14,7 +14,7 @@ namespace Data.Mapping
             this.ToTable("VitalSigns");
             this.HasKey(e => e.Id);
             this.Property(e => e.CreatedDate).IsRequired();
-            this.HasRequired(e => e.PatientVisit).WithMany().HasForeignKey(e => e.PatientVisitId).WillCascadeOnDelete(false);
+            this.HasRequired(e => e.PatientVisit).WithMany(e => e.VitalSigns).HasForeignKey(e => e.PatientVisitId).WillCascadeOnDelete(false);
         }
     }
 }
